@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Monty-Hall-Problem-Solution-Verification": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
