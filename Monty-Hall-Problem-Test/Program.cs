@@ -12,16 +12,40 @@ namespace Monty_Hall_Problem_Solution_Verification
             DateTime dtSeed = DateTime.UtcNow;
             random = new Random(dtSeed.Hour + dtSeed.Minute + dtSeed.Second + dtSeed.Microsecond);
 
-            int num_of_games = 100;
+            int num_of_games = 1000;
             int num_of_doors = 3;
             int prize = int.MinValue;
             int choice = int.MinValue;
 
+            int normalGamesWon = 0;
             for (int i = 0; i < num_of_games; i++)
             {
                 bool won = PlayLetsMakeADeal(num_of_doors, false, out prize, out choice);
+                if (won)
+                    ++normalGamesWon;
                 Console.WriteLine($"Game {i} | prize = {prize} | choice = {choice} | {(won ? "Win" : "Loose")}");
             }
+            Console.WriteLine("");
+
+            Console.WriteLine("**************************************");
+            Console.WriteLine("* Test Marilyn vos Savant's Solution *");
+            Console.WriteLine("**************************************");
+
+            int savantGamesWon = 0;
+            for (int i = 0; i < num_of_games; i++)
+            {
+                bool won = PlayLetsMakeADeal(num_of_doors, true, out prize, out choice);
+                if (won)
+                    ++savantGamesWon;
+                Console.WriteLine($"Game {i} | prize = {prize} | choice = {choice} | {(won ? "Win" : "Loose")}");
+            }
+            Console.WriteLine("");
+
+            Console.WriteLine("**************************************");
+            Console.WriteLine("*              Comparison            *");
+            Console.WriteLine("**************************************");
+            Console.WriteLine($"Games Won (No Changing Doors): {normalGamesWon}");
+            Console.WriteLine($"Games Won (Changing Doors)   : {savantGamesWon}");
 
             Console.WriteLine("Hit Enter to Continue...");
             Console.ReadKey();
@@ -91,6 +115,9 @@ namespace Monty_Hall_Problem_Solution_Verification
         static int ChangeChoice(int num_of_doors, int currentChoice, Dictionary<int, int> doors)
         {
             var availiableDoors = doors.Where((kvp, index) => kvp.Value == 0).ToList();
+
+            if (availiableDoors.Count == 0)
+                return currentChoice;
 
             int index = random.Next(availiableDoors.Count());
             var selectedDoor = availiableDoors.ElementAt(index);
