@@ -12,40 +12,59 @@ namespace Monty_Hall_Problem_Solution_Verification
             DateTime dtSeed = DateTime.UtcNow;
             random = new Random(dtSeed.Hour + dtSeed.Minute + dtSeed.Second + dtSeed.Microsecond);
 
-            int num_of_games = 1000;
-            int num_of_doors = 3;
-            int prize = int.MinValue;
-            int choice = int.MinValue;
+            int num_of_simulations = 10;
+            List<int> collectionNormalGamesWon = new List<int>();
+            List<int> collectionSavantGamesWon = new List<int>();
 
-            int normalGamesWon = 0;
-            for (int i = 0; i < num_of_games; i++)
+            for (int s = 0; s < num_of_simulations; s++)
             {
-                bool won = PlayLetsMakeADeal(num_of_doors, false, out prize, out choice);
-                if (won)
-                    ++normalGamesWon;
-                Console.WriteLine($"Game {i} | prize = {prize} | choice = {choice} | {(won ? "Win" : "Loose")}");
+                int num_of_games = 50000;
+                int num_of_doors = 10;
+                int prize = int.MinValue;
+                int choice = int.MinValue;
+
+                int normalGamesWon = 0;
+                for (int i = 0; i < num_of_games; i++)
+                {
+                    bool won = PlayLetsMakeADeal(num_of_doors, false, out prize, out choice);
+                    if (won)
+                        ++normalGamesWon;
+                    Console.WriteLine($"Game {i} | prize = {prize} | choice = {choice} | {(won ? "Win" : "Loose")}");
+                }
+                Console.WriteLine("");
+
+                Console.WriteLine("**************************************");
+                Console.WriteLine("* Test Marilyn vos Savant's Solution *");
+                Console.WriteLine("**************************************");
+
+                int savantGamesWon = 0;
+                for (int i = 0; i < num_of_games; i++)
+                {
+                    bool won = PlayLetsMakeADeal(num_of_doors, true, out prize, out choice);
+                    if (won)
+                        ++savantGamesWon;
+                    Console.WriteLine($"Game {i} | prize = {prize} | choice = {choice} | {(won ? "Win" : "Loose")}");
+                }
+                Console.WriteLine("");
+
+                Console.WriteLine("**************************************");
+                Console.WriteLine("*              Comparison            *");
+                Console.WriteLine("**************************************");
+                Console.WriteLine($"Games Won (No Changing Doors): {normalGamesWon}");
+                Console.WriteLine($"Games Won (Changing Doors)   : {savantGamesWon}");
+
+                collectionNormalGamesWon.Add(normalGamesWon);
+                collectionSavantGamesWon.Add(savantGamesWon);
             }
-            Console.WriteLine("");
 
             Console.WriteLine("**************************************");
-            Console.WriteLine("* Test Marilyn vos Savant's Solution *");
+            Console.WriteLine("*              Summary               *");
             Console.WriteLine("**************************************");
-
-            int savantGamesWon = 0;
-            for (int i = 0; i < num_of_games; i++)
-            {
-                bool won = PlayLetsMakeADeal(num_of_doors, true, out prize, out choice);
-                if (won)
-                    ++savantGamesWon;
-                Console.WriteLine($"Game {i} | prize = {prize} | choice = {choice} | {(won ? "Win" : "Loose")}");
-            }
-            Console.WriteLine("");
-
-            Console.WriteLine("**************************************");
-            Console.WriteLine("*              Comparison            *");
-            Console.WriteLine("**************************************");
-            Console.WriteLine($"Games Won (No Changing Doors): {normalGamesWon}");
-            Console.WriteLine($"Games Won (Changing Doors)   : {savantGamesWon}");
+            Console.WriteLine($"Games Won (No Changing Doors): [{string.Join(", ", collectionNormalGamesWon)}]");
+            Console.WriteLine($"Games Won (Changing Doors)   : [{string.Join(", ", collectionSavantGamesWon)}]");
+            Console.WriteLine("--------------------------------------");
+            Console.WriteLine($"Average number of Games Won (No Changing Doors): {collectionNormalGamesWon.Average()}");
+            Console.WriteLine($"Average number of Games Won (Changing Doors)   : {collectionSavantGamesWon.Average()}");
 
             Console.WriteLine("Hit Enter to Continue...");
             Console.ReadKey();
