@@ -18,18 +18,21 @@ namespace Monty_Hall_Problem_Solution_Verification
 
             for (int s = 0; s < num_of_simulations; s++)
             {
-                int num_of_games = 50000;
-                int num_of_doors = 10;
+                int num_of_games = 100;
+                int num_of_doors = 3;
                 int prize = int.MinValue;
+                int initialChoice = int.MinValue;
                 int choice = int.MinValue;
 
                 int normalGamesWon = 0;
+                prize = int.MinValue;
+                choice = int.MinValue;
                 for (int i = 0; i < num_of_games; i++)
                 {
-                    bool won = PlayLetsMakeADeal(num_of_doors, false, out prize, out choice);
+                    bool won = PlayLetsMakeADeal(num_of_doors, false, out prize, out initialChoice, out choice);
                     if (won)
                         ++normalGamesWon;
-                    Console.WriteLine($"Game {i} | prize = {prize} | choice = {choice} | {(won ? "Win" : "Loose")}");
+                    Console.WriteLine($"Game {i} | prize = {prize} | initialChoice = {initialChoice} | choice = {choice} | {(won ? "Win" : "Loose")}");
                 }
                 Console.WriteLine("");
 
@@ -38,12 +41,14 @@ namespace Monty_Hall_Problem_Solution_Verification
                 Console.WriteLine("**************************************");
 
                 int savantGamesWon = 0;
+                prize = int.MinValue;
+                choice = int.MinValue;
                 for (int i = 0; i < num_of_games; i++)
                 {
-                    bool won = PlayLetsMakeADeal(num_of_doors, true, out prize, out choice);
+                    bool won = PlayLetsMakeADeal(num_of_doors, true, out prize, out initialChoice, out choice);
                     if (won)
                         ++savantGamesWon;
-                    Console.WriteLine($"Game {i} | prize = {prize} | choice = {choice} | {(won ? "Win" : "Loose")}");
+                    Console.WriteLine($"Game {i} | prize = {prize} | initialChoice = {initialChoice} | choice = {choice} | {(won ? "Win" : "Loose")}");
                 }
                 Console.WriteLine("");
 
@@ -70,14 +75,15 @@ namespace Monty_Hall_Problem_Solution_Verification
             Console.ReadKey();
         }
 
-        static bool PlayLetsMakeADeal(int num_of_doors, bool change, out int prize, out int choice)
+        static bool PlayLetsMakeADeal(int num_of_doors, bool change, out int prize, out int initialChoice, out int choice)
         {
             prize = random.Next(num_of_doors);
 
             var doors = InitDoors(num_of_doors, prize);
 
             bool play = true;
-            choice = random.Next(num_of_doors);
+            initialChoice = random.Next(num_of_doors);
+            choice = initialChoice;
             int doorOpened = int.MinValue;
 
             while (play)
@@ -86,7 +92,7 @@ namespace Monty_Hall_Problem_Solution_Verification
 
                 play = choice != doorOpened && doors.Values.Any(x => x == 0);
 
-                if (!play && change)
+                if (play && change)
                 {
                     choice = ChangeChoice(num_of_doors, choice, doors);
                 }
@@ -116,15 +122,19 @@ namespace Monty_Hall_Problem_Solution_Verification
 
         static int OpenDoor(int num_of_doors, int prize, int choice, Dictionary<int, int> doors)
         {
-            var goatDoors = doors.Where((kvp, index) => kvp.Value == 0).ToList();
+            var goatDoors = doors.Where((kvp, index) => index != prize && index != choice && kvp.Value == 0).ToList();
 
-            if (goatDoors.Count() == 0)
+            KeyValuePair<int, int> selectedDoor;
+
+            if (goatDoors.Count() > 0)
             {
-                return choice;
+                int indexGoat = random.Next(goatDoors.Count());
+                selectedDoor = goatDoors.ElementAt(indexGoat);
             }
-
-            int indexGoat = random.Next(goatDoors.Count());
-            var selectedDoor = goatDoors.ElementAt(indexGoat);
+            else
+            {
+                selectedDoor = doors.ElementAt(choice);
+            }
 
             doors[selectedDoor.Key] = 2;
 
@@ -133,7 +143,7 @@ namespace Monty_Hall_Problem_Solution_Verification
 
         static int ChangeChoice(int num_of_doors, int currentChoice, Dictionary<int, int> doors)
         {
-            var availiableDoors = doors.Where((kvp, index) => kvp.Value == 0).ToList();
+            var availiableDoors = doors.Where((kvp, index) => kvp.Key != currentChoice && kvp.Value != 2).ToList();
 
             if (availiableDoors.Count == 0)
                 return currentChoice;
