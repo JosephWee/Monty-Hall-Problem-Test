@@ -3,9 +3,12 @@ This is a console program for verifying Marilyn vos Savant's solution to the Mon
 
 For more information please visit:
 https://en.wikipedia.org/wiki/Monty_Hall_problem
+<br/>
+<br/>
 
 ## Findings
 Assuming that my algorithm for simulating the "Let's Make a Deal" game is correct, the following are the results of running 100 simulations of 100 games with 3, 5, 10, 100 doors respectively.
+<br/>
 
 #### Setup #1
 ```
@@ -23,6 +26,7 @@ Games Won (Changing Doors):
 Average number of Games Won (No Changing Doors): 33.91
 Average number of Games Won (Changing Doors)   : 66.69
 ```
+<br/>
 
 #### Setup #2
 ```
@@ -40,6 +44,7 @@ Games Won (Changing Doors):
 Average number of Games Won (No Changing Doors): 20.26
 Average number of Games Won (Changing Doors)   : 64.03
 ```
+<br/>
 
 #### Setup #3
 ```
@@ -57,6 +62,7 @@ Games Won (Changing Doors):
 Average number of Games Won (No Changing Doors): 9.92
 Average number of Games Won (Changing Doors)   : 64.22
 ```
+<br/>
 
 #### Setup #4
 ```
@@ -74,3 +80,5 @@ Games Won (Changing Doors):
 Average number of Games Won (No Changing Doors): 0.97
 Average number of Games Won (Changing Doors)   : 63.21
 ```
+<br/>
+<br/>
